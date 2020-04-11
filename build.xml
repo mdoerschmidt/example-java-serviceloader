@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<!DOCTYPE project>
+
+<project name="ServiceLoader exaple" default="run">
+
+	<echo message="Java version: ${ant.java.version}" />
+	
+	<target name="init">
+		<property name="src.api.java" 				location="source/service/src/main/java" />
+		<property name="src.consumer.java" 			location="source/consumer/src/main/java" />
+		<property name="src.provider.java" 			location="source/provider/src/main/java" />
+		<property name="src.provider.resources"		location="source/provider/src/main/resources" />
+		<property name="src.provider2.java" 		location="source/provider2/src/main/java" />
+		<property name="src.provider2.resources" 	location="source/provider2/src/main/resources" />
+		
+		<property name="build.base" 				location="build" />
+		<property name="build.api"					location="${build.base}/api" />
+		<property name="build.consumer"				location="${build.base}/consumer" />
+		<property name="build.provider"				location="${build.base}/provider" />
+		<property name="build.provider2"			location="${build.base}/provider2" />
+		
+		<property name="build.jar"					location="${build.base}/jar" />
+		<property name="jar.api"					location="${build.jar}/service.jar" />
+		<property name="jar.consumer"				location="${build.jar}/consumer.jar" />
+		<property name="jar.provider"				location="${build.jar}/provider.jar" />
+		<property name="jar.provider2"				location="${build.jar}/provider2.jar" />
+	</target>
+	
+	<target name="prepare" depends="init">
+		<mkdir dir="${build.base}" />
+		<mkdir dir="${build.api}" />
+		<mkdir dir="${build.consumer}" />
+		<mkdir dir="${build.provider}" />
+		<mkdir dir="${build.provider2}" />
+		<mkdir dir="${build.jar}" />
+	</target>
+	
+	<target name="compile" depends="prepare" description="Compile Java classes">
+		<javac destdir="${build.api}">
+			<src path="${src.api.java}" />
+		</javac>
+
+		<javac destdir="${build.consumer}">
+			<src path="${src.consumer.java}" />
+			
+			<classpath>
+				<pathelement location="${build.api}" />
+			</classpath>
+		</javac>
+		
+		<javac destdir="${build.provider}">
+			<src path="${src.provider.java}" />
+			
+			<classpath>
+				<pathelement location="${build.api}" />
+			</classpath>
+		</javac>
+		
+		<javac destdir="${build.provider2}">
+			<src path="${src.provider2.java}" />
+			
+			<classpath>
+				<pathelement location="${build.api}" />
+			</classpath>
+		</javac>
+	</target>
+	
+	<target name="jar" depends="compile" description="Build Jar archives">
+		<jar destfile="${jar.api}">
+			<fileset dir="${build.api}" />
+		</jar>
+		
+		<jar destfile="${jar.consumer}">
+			<fileset dir="${build.consumer}" />
+		</jar>
+		
+		<jar destfile="${jar.provider}">
+			<fileset dir="${build.provider}" />
+			<fileset dir="${src.provider.resources}" />
+		</jar>
+			
+		<jar destfile="${jar.provider2}">
+			<fileset dir="${build.provider2}" />
+			<fileset dir="${src.provider2.resources}" />
+		</jar>
+	</target>
+	
+	<target name="run" depends="jar" description="Run example">
+		<java classname="examples.serviceloader.consumer.ServiceConsumer" fork="true">
+			<classpath>
+				<pathelement location="${jar.consumer}" />
+				<pathelement location="${jar.api}" />
+				<pathelement location="${jar.provider}" />
+				<pathelement location="${jar.provider2}" />
+			</classpath>
+		</java>
+	</target>
+
+</project>

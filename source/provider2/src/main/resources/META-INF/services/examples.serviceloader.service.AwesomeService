@@ -1,0 +1,10 @@
+#
+# This is the service configuration file.
+#
+# It must reside in META-INF/services and must be named after
+# the implemented service.
+# 
+# Each service provider is listed in a separate line
+#
+
+examples.serviceloader.provider2.Reverse
