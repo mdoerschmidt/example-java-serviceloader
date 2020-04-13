@@ -32,6 +32,7 @@ Use the service loader:
 for(AwesomeService service : loader) {
 	// Do something with the service
 }
+```
 
 That's all.
 
